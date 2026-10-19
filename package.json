@@ -1,0 +1,11 @@
+{
+  "name": "pokemon-learning-adventure",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check dist/app.js && node --check dist/drills.js && node --check dist/art.js && node --check dist/pokeapi.js && node --check dist/catalog.js && node --check dist/learning-state.js",
+    "test": "node --test test/drills.test.js && node test/pokeapi-checks.mjs && node test/learning-state-checks.mjs",
+    "build": "node build.mjs"
+  }
+}

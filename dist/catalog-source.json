@@ -1,0 +1,7 @@
+{
+  "source": "https://pokeapi.co/api/v2/pokemon-species?limit=10000",
+  "metadata": "https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv",
+  "count": 1025,
+  "retrievedAt": "2026-10-11",
+  "scope": "All national Pokédex species; default form for each species"
+}
