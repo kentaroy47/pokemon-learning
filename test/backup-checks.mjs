@@ -1,0 +1,10 @@
+import assert from'node:assert/strict';
+import{upgradeLearningState,makeBackup,parseBackup,capturedIds}from'../dist/learning-state.js';
+const db=upgradeLearningState({settings:{count:8},history:{'2026-10-10':{seconds:600,questions:24}},catches:[{id:'a',pokemon:25,date:'2026-10-10'},{id:'b',pokemon:133,date:'2026-10-10'}],rewardProgress:5,session:{stage:'questions'}});
+const restored=parseBackup(JSON.stringify(makeBackup(db)));
+assert.deepEqual(restored.catches,db.catches);assert.deepEqual(restored.history,db.history);assert.equal(restored.rewardProgress,5);assert.equal(restored.settings.count,8);
+assert.equal(restored.session,null,'Backups never restore an in-progress drill');assert.deepEqual([...capturedIds(restored)],[25,133]);
+for(const bad of['','not json','[]','{}','{"app":"other","version":1,"history":{},"catches":[]}','{"app":"pokemon-learning","version":2,"history":{},"catches":[]}','{"app":"pokemon-learning","version":1,"history":[],"catches":[]}'])assert.throws(()=>parseBackup(bad),/invalid-backup/);
+const dirty=parseBackup(JSON.stringify({app:'pokemon-learning',version:1,history:{},catches:[{id:'x',pokemon:'25',date:'d'},null,{id:'y',pokemon:6,date:'2026-10-11'}],rewardProgress:99}));
+assert.deepEqual(dirty.catches.map(c=>c.id),['y']);assert.equal(dirty.rewardProgress,0);
+console.log('PASS: backup export/import round-trip, invalid files rejected, malformed catches dropped, drill progress not restored.');

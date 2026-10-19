@@ -25,3 +25,11 @@ export function finishLearningRecord(state,now=new Date().toISOString()){
  s.historyRecorded=true;return true;
 }
 export function finishDailyRecord(state,now){return finishLearningRecord(state,now);}
+export function makeBackup(state){return{app:'pokemon-learning',version:1,exportedAt:new Date().toISOString(),settings:state.settings,history:state.history,catches:state.catches,rewardProgress:state.rewardProgress};}
+export function parseBackup(text){
+ let data;try{data=JSON.parse(text);}catch{throw new Error('invalid-backup');}
+ const plain=o=>o&&typeof o==='object'&&!Array.isArray(o);
+ if(!plain(data)||data.app!=='pokemon-learning'||data.version!==1||!plain(data.history)||!Array.isArray(data.catches))throw new Error('invalid-backup');
+ const catches=data.catches.filter(c=>plain(c)&&typeof c.id==='string'&&Number.isInteger(c.pokemon)&&c.pokemon>0&&typeof c.date==='string').map(c=>({...c}));
+ return upgradeLearningState({settings:plain(data.settings)?data.settings:{},history:data.history,catches,rewardProgress:data.rewardProgress,session:null});
+}

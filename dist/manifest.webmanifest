@@ -1,1 +1,1 @@
-{"name":"ポケモン まなびのぼうけん","short_name":"まなびのぼうけん","start_url":"./","display":"standalone","background_color":"#f9f7ef","theme_color":"#f9f7ef","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
+{"name":"ポケモン まなびのぼうけん","short_name":"まなびのぼうけん","id":"./","lang":"ja","start_url":"./","display":"standalone","background_color":"#f9f7ef","theme_color":"#f9f7ef","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]}
