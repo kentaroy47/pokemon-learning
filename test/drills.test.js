@@ -1,6 +1,6 @@
 import test from'node:test';
 import assert from'node:assert/strict';
-import{makeQuestions,clockSvg,KANJI,WORDS}from'../dist/drills.js';
+import{makeQuestions,clockSvg,KANJI,WORDS,GROUPS,OPPOSITES}from'../dist/drills.js';
 const SUBJECTS=['math','calc','multiply','word','clock','lang'];
 const calcOf=s=>Function(`return(${s.replace(/＋/g,'+').replace(/−/g,'-').replace(/×/g,'*').replace(/＝/g,'==')})`)();
 const clockText=(h,m)=>`${h}じ${m?` ${m}ふん`:''}`,wrap12=h=>((h-1+12)%12)+1;
@@ -9,20 +9,27 @@ const keyOf=q=>`${q.text}|${q.h??''}:${q.m??''}|${[...q.options].sort()}`;
 function checkQuestion(q){
  assert.equal(q.options.length,4);assert.equal(new Set(q.options).size,4);assert.equal(q.options.filter(o=>o===q.answer).length,1);assert.ok(q.hint);assert.ok(q.explain);
  // The equation(s) in the explanation are true, and the last one ends in the answer (except fill-in-the-blank, whose answer is the missing number).
- if(q.eq){const clauses=q.eq.split('、');for(const c of clauses)assert.ok(calcOf(c),`Wrong equation ${c}`);if(!['blank','seq','ten'].includes(q.variant))assert.equal(parseInt(q.answer),Number(clauses.at(-1).split('＝')[1]),`Answer disagrees with ${q.eq}`);}
+ if(q.eq){const clauses=q.eq.split('、');for(const c of clauses)assert.ok(calcOf(c),`Wrong equation ${c}`);if(!['blank','seq','ten','decomp','which'].includes(q.variant))assert.equal(parseInt(q.answer),Number(clauses.at(-1).split('＝')[1]),`Answer disagrees with ${q.eq}`);}
  const first=q.text.split('\n')[0];
  if(q.kind==='calc'||q.kind==='multiply'){
   if(first.includes('？')&&first.includes('＝'))assert.ok(calcOf(first.replace('？',q.answer)),`Wrong answer for ${q.text}`);
   if(first.includes('□')&&first.includes('＝'))assert.ok(calcOf(first.replace('□',q.answer)),`Wrong blank for ${q.text}`);
   if(q.variant==='seq'){const n=q.text.split('\n')[1].split('→').map(x=>x.trim()).map(x=>x==='□'?Number(q.answer):Number(x));const d=n[1]-n[0];assert.ok(n.every((x,i)=>i===0||x-n[i-1]===d),`Not a sequence ${q.text}`);assert.ok(n.every(x=>x>=0));}
   if(q.variant==='bigger'){const o=q.options.map(Number);assert.equal(Number(q.answer),q.text.includes('おおきい')?Math.max(...o):Math.min(...o));}
+  const nb=q.text.match(/^(\d+)の (つぎ|まえ)の かず/);if(nb)assert.equal(Number(q.answer),Number(nb[1])+(nb[2]==='つぎ'?1:-1));
+  const bt=first.match(/^(\d+) ＜ □ ＜ (\d+)$/);if(bt){assert.equal(Number(bt[2])-Number(bt[1]),2);assert.equal(Number(q.answer),Number(bt[1])+1);}
+  const dc=first.match(/^(\d+)は (\d+)と いくつ？$/);if(dc)assert.equal(Number(dc[2])+Number(q.answer),Number(dc[1]));
+  const tn=first.match(/^10が 1こと 1が (\d+)こで/);if(tn)assert.equal(Number(q.answer),10+Number(tn[1]));
+  if(q.variant==='count'){const row=q.text.split('\n').slice(0,-1).join('');assert.equal(row.split(q.target).length-1,parseInt(q.answer));}
+  if(q.variant==='nth'){const[line,ask]=q.text.split('\n'),row=line.split(' '),m=ask.match(/^(まえ|うしろ)から (\d)ばんめ/),n=Number(m[2]);assert.equal(row.length,5);assert.equal(new Set(row).size,5);assert.equal(q.answer,m[1]==='まえ'?row[n-1]:row[row.length-n]);}
+  if(q.variant==='which'){const p=Number(q.text.match(/^こたえが (\d+)に/)[1]);assert.ok(calcOf(`${q.answer} ＝ ${p}`));for(const o of q.options.filter(o=>o!==q.answer))assert.ok(!calcOf(`${o} ＝ ${p}`),`${o} is also ${p}`);assert.ok(q.hidePicture);}
   if(q.variant==='ten')assert.equal(Number(q.answer)+Number(q.text.match(/^(\d+)/)[1]),10);
-  if(q.kind==='multiply'){assert.ok(q.a>=1&&q.a<=3&&q.b>=1&&q.b<=9);assert.equal(q.eq,`${q.a} × ${q.b} ＝ ${q.a*q.b}`);if(q.variant==='blank')assert.ok(q.hidePicture,'A fill-in-the-blank must not show its answer as a picture');}
+  if(q.kind==='multiply'){assert.ok(q.a>=1&&q.a<=3&&q.b>=1&&q.b<=9);assert.equal(q.eq,`${q.a} × ${q.b} ＝ ${q.a*q.b}`);if(q.variant==='blank'||q.variant==='which')assert.ok(q.hidePicture,'A fill-in-the-blank must not show its answer as a picture');}
  }
  if(q.kind==='word'){// the numbers in the first equation all come from the story
   const ops=q.eq.split('、')[0].split('＝')[0].match(/\d+/g);for(const o of ops)assert.ok(new RegExp(`(^|\\D)${o}(\\D|$)`).test(q.text),`${o} missing from "${q.text}"`);
  }
- if(q.kind==='clock'){const{h,m}=q,exp={read:clockText(h,m),after1:clockText(wrap12(h+1),m),before1:clockText(wrap12(h-1),m),after30:m===0?clockText(h,30):clockText(wrap12(h+1),0)}[q.variant];assert.equal(q.answer,exp);}
+ if(q.kind==='clock'){const{h,m}=q,sh=q.variant.match(/^(after|before)(\d)$/),exp=sh?clockText(wrap12(h+(sh[1]==='after'?1:-1)*Number(sh[2])),m):{read:clockText(h,m),after30:m===0?clockText(h,30):clockText(wrap12(h+1),0),hand:m===0?'12':'6'}[q.variant];assert.equal(q.answer,exp);if(sh)assert.ok(q.text.includes(sh[2]+'じかん'));if(q.variant==='hand')assert.ok(m===0||m===30);}
  if(q.kind==='lang'){
   const w=q.text.match(/「([^」]+)」/)?.[1];
   if(q.text.includes('はじめの もじ'))assert.equal(q.answer,chars(w)[0]);
@@ -31,6 +38,16 @@ function checkQuestion(q){
   if(q.text.includes('を カタカナにすると'))assert.equal(q.answer,kata(w));
   if(q.text.startsWith('しりとり')){assert.equal(chars(q.answer)[0],chars(w).at(-1));assert.notEqual(chars(w).at(-1),'ん');}
   if(q.text.includes('の ＿に はいる もじ')){const cw=chars(w),full=chars(WORDS.find(x=>chars(x[0]).length===cw.length&&chars(x[0]).every((c,i)=>cw[i]==='＿'||cw[i]===c))[0]);assert.equal(full[cw.indexOf('＿')],q.answer);}
+  if(q.text.includes('ならべかえて ことばを つくろう')){const shown=q.text.split('\n')[1].split('・');assert.deepEqual([...shown].sort(),chars(q.answer).sort());assert.notEqual(shown.join(''),q.answer);assert.ok(WORDS.some(x=>x[0]===q.answer));assert.equal(q.options.filter(o=>WORDS.some(x=>x[0]===o)).length,1,'only one option is a real word');}
+  if(q.text.startsWith('ことばを ならべかえて、いみが')){const chunks=q.text.split('\n')[1].split(' ／ ');assert.deepEqual([...chunks].sort(),q.answer.split(' ').sort());assert.ok(q.answer.endsWith('。'));assert.ok(/^.+は .+を .+ました。$/.test(q.answer));assert.notEqual(chunks.join(' '),q.answer);}
+  if(/いちにち。/.test(q.text)){const lines=q.text.split('\n'),ev=lines.filter(l=>/^(あさ|ひる|ゆうがた|よる)、/.test(l)).map(l=>l.replace(/^[^、]+、|。$/g,'')),isFirst=/はじめ/.test(lines.at(-1));assert.equal(q.answer,isFirst?ev[0]:ev.at(-1));assert.equal(new Set(ev).size,ev.length);}
+  const dw=q.text.match(/^「(.+ようび)」の (つぎ|まえ)の ひは？$/);if(dw){const D=['げつようび','かようび','すいようび','もくようび','きんようび','どようび','にちようび'],i=D.indexOf(dw[1]);assert.equal(q.answer,D[(i+(dw[2]==='つぎ'?1:6))%7]);}
+  if(q.text.endsWith('のは どの きせつ？'))assert.deepEqual([...q.options].sort(),['あき','なつ','はる','ふゆ'].sort());
+  const gm=q.text.match(/^「(.+)」は なんの なかま？$/);if(gm)assert.ok(GROUPS.find(g=>g[0]===q.answer)[1].includes(gm[1]));
+  const op=q.text.match(/^「(.+)」の はんたいは？$/);if(op){const pr=OPPOSITES.find(p=>p.includes(op[1]));if(pr)assert.equal(q.answer,pr.find(x=>x!==op[1]));}
+  if(q.text.startsWith('（　）に はいる ことばは')){const sen=q.text.split('\n')[1],want=/(いきます|かえります)。$/.test(sen)?'へ':/(たべます|よみます|のみます|いれます)。$/.test(sen)?'を':'は';assert.equal(q.answer,want);}
+  const ek=KANJI.find(x=>x.e&&q.text===x.e+' この えの かんじは どれ？');if(ek)assert.equal(q.answer,ek.k);
+  const ks=q.text.match(/^「(.)」＋「(.+)」は いくつ？$/);if(ks){const N='一二三四五六七八九十';assert.equal(Number(q.answer),N.indexOf(ks[1])+1+N.indexOf(ks[2])+1);assert.ok(Number(q.answer)<=10);}
   const k=KANJI.find(x=>q.text===`「${x.k}」は なんと よむ？`);if(k)assert.equal(q.answer,k.r);
   const k2=KANJI.find(x=>q.text===`「${x.r}」を かんじで かくと？`);if(k2)assert.equal(q.answer,k2.k);
  }
@@ -44,7 +61,7 @@ test('all generated questions have exactly one correct choice, true equations an
 });
 test('kanji and word content is unambiguous',()=>{
  assert.equal(new Set(KANJI.map(k=>k.r)).size,KANJI.length,'duplicate reading');assert.equal(new Set(KANJI.map(k=>k.k)).size,KANJI.length,'duplicate kanji');
- assert.ok(KANJI.length>=60);assert.equal(new Set(WORDS.map(w=>w[0])).size,WORDS.length);assert.ok(WORDS.length>=50);
+ assert.ok(KANJI.length>=75);assert.equal(new Set(WORDS.map(w=>w[0])).size,WORDS.length);assert.ok(WORDS.length>=80);
 });
 test('daily generation is reproducible, includes all four math topics and respects settings',()=>{
  assert.deepEqual(makeQuestions('math',12,'2026-10-10'),makeQuestions('math',12,'2026-10-10'));
@@ -52,8 +69,8 @@ test('daily generation is reproducible, includes all four math topics and respec
  for(const n of[8,12,16])assert.deepEqual(new Set(makeQuestions('math',n,'today').map(q=>q.kind)),new Set(['calc','multiply','word','clock']));
  assert.ok(makeQuestions('math',16,'tomorrow',{multiply:false}).every(q=>q.kind!=='multiply'));
  assert.equal(new Set(makeQuestions('lang',12,'today').map(q=>q.tag)).size,5);
- for(const q of makeQuestions('math',200,'range10',{range:10}).filter(q=>q.kind==='calc'||q.kind==='word'))assert.ok(q.value<=10,`${q.text} exceeds 10`);
- for(const q of makeQuestions('math',200,'range20',{range:20}).filter(q=>q.kind==='calc'||q.kind==='word'))assert.ok(q.value<=20&&q.value>=0);
+ for(const q of makeQuestions('math',200,'range10',{range:10}).filter(q=>(q.kind==='calc'||q.kind==='word')&&q.value!==undefined))assert.ok(q.value<=10,`${q.text} exceeds 10`);
+ for(const q of makeQuestions('math',200,'range20',{range:20}).filter(q=>(q.kind==='calc'||q.kind==='word')&&q.value!==undefined))assert.ok(q.value<=20&&q.value>=0);
 });
 test('questions are varied: many formats, shuffled order, and little repetition from day to day',()=>{
  const days=Array.from({length:30},(_,i)=>`2026-11-${i+1}`);
@@ -61,8 +78,8 @@ test('questions are varied: many formats, shuffled order, and little repetition 
 // Multiplication facts (27) and clock faces are small spaces that are meant to be practised repeatedly, so math allows more repeats than language.
  const ratio=qs=>new Set(qs.map(keyOf)).size/qs.length;
  assert.ok(ratio(math)>.75,`math repeats too much (${ratio(math)})`);assert.ok(ratio(lang)>.85,`lang repeats too much (${ratio(lang)})`);
- const variants=new Set(math.map(q=>`${q.kind}/${q.variant}`));assert.ok(variants.size>=20,`only ${variants.size} math formats`);
- assert.ok(new Set(math.filter(q=>q.kind==='word').map(q=>q.variant)).size>=9,'word problem templates');
+ const variants=new Set(math.map(q=>`${q.kind}/${q.variant}`));assert.ok(variants.size>=30,`only ${variants.size} math formats`);
+ assert.ok(new Set(math.filter(q=>q.kind==='word').map(q=>q.variant)).size>=12,'word problem templates');
  const orders=new Set(days.map(d=>makeQuestions('math',12,d).map(q=>q.kind).join()));assert.ok(orders.size>=10,'question order should not be a fixed cycle');
  const style=q=>`${q.tag}/${q.text.replace(/「[^」]*」/g,'').replace(/[\u{1F000}-\u{1FFFF}☀-➿️⭐]/gu,'').replace(/\s/g,'').slice(0,8)}`;
  const langStyles=new Set(lang.map(style));assert.ok(langStyles.size>=30,`only ${langStyles.size} language formats`);

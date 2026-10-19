@@ -143,6 +143,31 @@ const ACTS=[['きのみ','たべました','たべた'],['りんご','たべま�
 const TIMES=['あさ','ひる','ゆうがた','よる'];
 const REASONS=[['おなかが ぺこぺこなので、おにぎりを たべました。\nなぜ おにぎりを たべた？','おなかが すいていたから',['おなかが すいていたから','ねむかったから','さむかったから','たのしかったから']],['さむい ふゆなので、ゼニガメは あたたかい ふくを きました。\nなぜ ふくを きた？','さむいから',['さむいから','あついから','うれしいから','ねむいから']],['ヒトカゲは ころんで、ひざを うちました。\nヒトカゲは どうして ないた？','いたかったから',['いたかったから','おかしかったから','おなかが すいたから','ねむかったから']],['あしたは えんそくです。フシギダネは たのしみで、よく ねむれませんでした。\nなにが たのしみ？','えんそく',['えんそく','うんどうかい','おまつり','たんじょうび']],['プリンは あかい ふうせんと あおい ふうせんを もっています。\nあおい ふうせんの かずは いくつ？\n（あかい ふうせんは 2こ、あおい ふうせんは 3こ）','3こ',['3こ','2こ','5こ','1こ']],['コダックは あさ 7じに おきて、7じ30ぷんに あさごはんを たべました。\nあさごはんは なんじ なんぷん？','7じ30ぷん',['7じ30ぷん','7じ','8じ','6じ30ぷん']]];
 
+// ---- More content (appended to the lists above) ---------------------------
+const addTo=(list,extra,same=(a,b)=>a[0]===b[0])=>{for(const x of extra)if(!list.some(y=>same(x,y)))list.push(x);};
+addTo(WORDS,[['ぼうし','🎩'],['てがみ','💌'],['じてんしゃ','🚲'],['でんしゃ','🚃'],['ゆびわ','💍'],['かぎ','🔑'],['ほうき','🧹'],['にじ','🌈'],['かみなり','⚡'],['やま','⛰️'],['うみ','🌊'],['もり','🌲'],['たけ','🎋'],['いか','🦑'],['えび','🦐'],['ふくろう','🦉'],['かたつむり','🐌'],['てんとうむし','🐞'],['ちょうちょ','🦋'],['ひまわり','🌻'],['たんぽぽ','🌼'],['きのこ','🍄'],['にんじん','🥕'],['ごはん','🍚'],['ぶどう','🍇'],['もも','🍑'],['なし','🍐'],['くり','🌰'],['ふうせん','🎈'],['たいこ','🥁']]);
+addTo(KATA_WORDS,[['スプーン','🥄'],['ミルク','🥛'],['チョコ','🍫'],['タクシー','🚕'],['ヘリコプター','🚁'],['テント','⛺'],['ドア','🚪'],['ベッド','🛏️'],['ラーメン','🍜'],['カレー','🍛'],['ハンバーガー','🍔'],['ポスト','📮'],['ゴリラ','🦍'],['キリン','🦒'],['ゾウ','🐘'],['ウサギ','🐰'],['クッキー','🍪'],['ドーナツ','🍩'],['ヨット','⛵']]);
+addTo(POKE_NAMES,['ガーディ','ディグダ','ヒノアラシ','ワニノコ','チコリータ','アチャモ','ミズゴロウ','キモリ','ナエトル','ヒコザル','ニャオハ','ホゲータ','クワッス','ケロマツ','フォッコ','ハリマロン','ニンフィア','ヤミカラス'],(a,b)=>a===b);
+const KANJI_EMOJI={山:'⛰️',火:'🔥',水:'💧',木:'🌳',花:'🌸',犬:'🐶',虫:'🐛',雨:'☔',月:'🌙',車:'🚗',目:'👀',耳:'👂',口:'👄',手:'✋',足:'🦶',本:'📖',貝:'🐚',王:'👑',空:'☁️',竹:'🎋',草:'🌱',金:'💰',田:'🌾',糸:'🧵'};
+addTo(KANJI,['日|にち|「にちようび」の「にち」だよ。','月|つき|よるの そらに うかぶよ。','金|きん|「きんいろ」の「きん」だよ。','本|ほん|よんで たのしむ ものだよ。','四|よん|「さん」の つぎの かずだよ。','字|じ|もじの「じ」だよ。','夕|ゆう|「ゆうひ」の「ゆう」だよ。','名|な|ひとの「なまえ」の「な」だよ。','千|せん|100が 10こで 1000だよ。'].map(s=>{const[k,r,h]=s.split('|');return{k,r,h};}),(a,b)=>a.k===b.k||a.r===b.r);
+for(const e of KANJI)e.e=KANJI_EMOJI[e.k];
+addTo(OPPOSITES,[['うえ','した'],['みぎ','ひだり'],['まえ','うしろ'],['ふえる','へる'],['かつ','まける'],['おきる','ねる'],['うれしい','かなしい'],['かたい','やわらかい'],['いく','くる'],['かう','うる'],['あげる','もらう'],['むかし','いま']],(a,b)=>a[0]===b[0]);
+addTo(COUNTERS,[['はな','ほん'],['バナナ','ほん'],['ハンカチ','まい'],['みかん','こ'],['あめ','こ'],['きって','まい'],['ちょうちょ','ひき']],(a,b)=>a[0]===b[0]);
+addTo(SOUNDS,[['うま','ひひーん'],['にわとり','こけこっこー'],['さる','きゃっきゃっ'],['かえる','けろけろ']],(a,b)=>a[0]===b[0]);
+addTo(PLACES,['プール','おみせ','えき','はたけ'],(a,b)=>a===b);
+addTo(ACTS,[['ケーキ','たべました','たべた'],['くつ','はきました','はいた'],['ぼうし','かぶりました','かぶった'],['てがみ','かきました','かいた'],['おんがく','ききました','きいた'],['サッカーボール','けりました','けった']],(a,b)=>a[0]===b[0]);
+REASONS.push(['ざあざあ ふって いるので、ゼニガメは かさを さして います。\nなにが ふっている？','あめ',['あめ','ゆき','はな','ほし']],['ピカチュウは おふろで からだを あらいました。\nなにで あらった？','せっけん',['せっけん','えんぴつ','ほん','ぼうし']],['ニャースは さかなを ほしそうに みています。\nニャースは なにが すき？','さかな',['さかな','ほん','かさ','くつ']],['ミミッキュは あたたかい ふくを きて、ゆきだるまを つくりました。\nどんな きせつ？','ふゆ',['ふゆ','なつ','はる','あき']],['フシギダネは あさ おきて、はを みがきました。\nなにを みがいた？','は',['は','て','あし','め']]);
+const DAYS=['げつようび','かようび','すいようび','もくようび','きんようび','どようび','にちようび'];
+const SEASONS=['はる','なつ','あき','ふゆ'];
+const CLUES=[['さくらが さく','はる'],['たんぽぽが さく','はる'],['にゅうがくしきが ある','はる'],['プールで およぐ','なつ'],['せみが なく','なつ'],['すいかを たべる','なつ'],['ひまわりが さく','なつ'],['はなびを みる','なつ'],['もみじが あかく なる','あき'],['どんぐりが おちる','あき'],['おつきみを する','あき'],['さんまを たべる','あき'],['ゆきが ふる','ふゆ'],['こたつに はいる','ふゆ'],['さむくて いきが しろい','ふゆ'],['おしょうがつが ある','ふゆ']];
+const EVENT_ACTS=['ごはんを たべました','ほんを よみました','こうえんで あそびました','えを かきました','うたを うたいました','ボールを なげました','おさんぽを しました'];
+const PARTICLES={'は':['ピカチュウ（　）かわいいです。','そら（　）あおいです。','プリン（　）まるいです。'],'を':['ぼくは ごはん（　）たべます。','わたしは ほん（　）よみます。','ピカチュウは みず（　）のみます。','ヒトカゲは きのみ（　）たべます。'],'へ':['ぼくは がっこう（　）いきます。','ニャースは こうえん（　）いきます。','みんなで うみ（　）いきます。','イーブイは いえ（　）かえります。']};
+const PARTICLE_WRONG={'は':['を','へ','の'],'を':['へ','の','が'],'へ':['の','が','な']};
+const PARTICLE_HINT={'は':'はなす ときの「わ」は「は」と かくよ。','を':'ものに むかう ことばは「を」と かくよ。','へ':'いく ほうこうを しめす「え」は「へ」と かくよ。'};
+const SHAPE_SETS=[['りんご','🍎'],['バナナ','🍌'],['さんかく','🔺'],['しかく','🟦'],['まる','🔴'],['ほし','⭐'],['さかな','🐟'],['はな','🌸']];
+const ROW_EMOJI=['🐶','🐱','🐰','🐸','🐷','🐵','🐼','🐥','🐢','🦁'];
+const permute=a=>a.length<=1?[a.join('')]:[...new Set(a.flatMap((x,i)=>permute([...a.slice(0,i),...a.slice(i+1)]).map(p=>x+p)))];
+
 const opts=(answer,wrongs,r)=>{const w=[...new Set(wrongs.filter(x=>x!==answer))];if(w.length<3)throw new Error(`Not enough distractors for ${answer}`);return shuffle([answer,...shuffle(w,r).slice(0,3)],r);};
 const letterOptions=(answer,near,pool,r)=>opts(answer,[...near.filter(c=>!SMALL.has(c)),...shuffle(pool,r)],r);
 const countOptions=n=>[n,n+1,n-1,n+2,n-2,n+3].filter(v=>v>=1).slice(0,4).map(v=>`${v}もじ`);
@@ -195,6 +220,19 @@ function langMakers(cat,r){
   ()=>{const[c1,c2,c3,c4]=shuffle(NAMES,r),[th,po,pl]=pick(ACTS),p=pick(PLACES);return['ぶんを よもう',`${c1}と ${c2}は ${p}で ${th}を ${po}。\nだれと だれが ${th}を ${pl}？`,`${c1}と ${c2}`,opts(`${c1}と ${c2}`,[`${c1}と ${c3}`,`${c4}と ${c2}`,`${c3}と ${c4}`],r),'「と」でつながっている ふたりの なまえを よもう。'];},
   ()=>{const[text,ans,o]=pick(REASONS);return['ぶんを よもう',text,ans,shuffle(o,r),'ぶんを ゆっくり よんで、こたえを さがそう。'];},
   staticMaker];
+ const rint=(a,b)=>a+Math.floor(r()*(b-a+1));
+ hira.push(()=>{const[w,e]=pick(WORDS),c=chars(w);if(c.length<3||c.length>5||c.some(x=>SMALL.has(x)))return null;const known=new Set(WORDS.map(x=>x[0])),perms=shuffle(permute(c).filter(p=>!known.has(p)),r);if(perms.length<4)return null;return['ひらがな',`${e} ならべかえて ことばを つくろう！\n${chars(perms[0]).join('・')}`,w,opts(w,perms.slice(1),r),`えを ヒントに、「${c[0]}」から はじまる ことばを さがそう。`];});
+ kanji.push(
+  ()=>{const pool=KANJI.filter(k=>k.e),k=pick(pool);return['かんじ',`${k.e} この えの かんじは どれ？`,k.k,opts(k.k,pool.map(x=>x.k),r),k.h];},
+  ()=>{const N='一二三四五六七八九十',x=rint(1,8),y=rint(1,10-x),s=x+y,o=[s,s+1,s-1,s+2,s-2].filter(v=>v>=1).slice(0,4).map(String);return['かんじ',`「${N[x-1]}」＋「${N[y-1]}」は いくつ？`,String(s),shuffle(o,r),`「${N[x-1]}」は ${x}、「${N[y-1]}」は ${y}。たしざんだよ。`];});
+ koto.push(
+  ()=>{const next=r()<.5,i=rint(0,6),a=DAYS[(i+(next?1:6))%7];return['ことば',`「${DAYS[i]}」の ${next?'つぎ':'まえ'}の ひは？`,a,opts(a,DAYS,r),'げつ・か・すい・もく・きん・ど・にち、と じゅんばんに いってみよう。'];},
+  ()=>{const[clue,a]=pick(CLUES);return['ことば',`「${clue}」のは どの きせつ？`,a,shuffle(SEASONS,r),'あたたかい？ あつい？ すずしい？ さむい？ きせつを おもいうかべよう。'];},
+  ()=>{const[g,items]=pick(GROUPS),w=pick(items);return['ことば',`「${w}」は なんの なかま？`,g,opts(g,GROUPS.map(x=>x[0]),r),`「${w}」は どんな ものかな？ おなじ なかまを おもいうかべよう。`];},
+  ()=>{const p=pick(Object.keys(PARTICLES));return['ことば',`（　）に はいる ことばは どれ？\n${pick(PARTICLES[p])}`,p,opts(p,PARTICLE_WRONG[p],r),PARTICLE_HINT[p]];});
+ bun.push(
+  ()=>{const c=pick(NAMES),[th,po]=pick(ACTS),S=`${c}は`,O=`${th}を`,V=`${po}。`,ans=`${S} ${O} ${V}`,wrongs=[`${c}を ${th}は ${V}`,`${th}は ${c}を ${V}`,`${V} ${S} ${O}`,`${S} ${V} ${O}`],chunks=[S,O,V];let shown=shuffle(chunks,r);while(shown.join(' ')===ans)shown=shuffle(chunks,r);return['ぶんを よもう',`ことばを ならべかえて、いみが とおる ぶんを つくろう。\n${shown.join(' ／ ')}`,ans,opts(ans,wrongs,r),'「だれは」「なにを」「どうした」の じゅんばんを かんがえよう。'];},
+  ()=>{const c=pick(NAMES),i=rint(0,1),times=TIMES.slice(i,i+3),acts=shuffle(EVENT_ACTS,r).slice(0,4),first=r()<.5,ans=first?acts[0]:acts[2];return['ぶんを よもう',`${c}の いちにち。\n${times.map((t,k)=>`${t}、${acts[k]}。`).join('\n')}\nいちばん ${first?'はじめ':'さいご'}に したことは どれ？`,ans,shuffle(acts,r),`「${times.join('・')}」の じゅんばんに よんでみよう。`];});
  return{'ひらがな':hira,'カタカナ':kata,'かんじ':kanji,'ことば':koto,'ぶんを よもう':bun}[cat];
 }
 const FOODS=[['きのみ','こ'],['あめ','こ'],['クッキー','こ'],['おにぎり','こ']];
@@ -208,7 +246,7 @@ function mathMaker(kind,r,settings){
  const total=()=>limit===20&&r()<.6?int(11,20):int(3,limit);
  const num=(o,v,fmt=String)=>({kind:o.kind,tag:o.tag,text:o.text,answer:fmt(v),options:numberOptions(v,r,fmt),hint:o.hint,explain:`${o.eq}。`+(o.say||''),eq:o.eq,value:v,variant:o.variant,...(o.extra||{})});
  const calc=()=>{
-  const v=pick(['plain','plain','plain','blank','blank','three','seq','bigger','ten']);
+  const v=pick(['plain','plain','plain','blank','blank','three','seq','bigger','ten','count','count','nth','decomp','neighbor',...(limit===20?['tens']:[])]);
   if(v==='plain'){const a=int(1,limit-1),b=int(1,limit-a),minus=r()>.5,t=a+b,ans=minus?a:t;
    return num({kind:'calc',variant:v,tag:minus?'ひきざん':'たしざん',text:minus?`${t} − ${b} ＝ ？`:`${a} ＋ ${b} ＝ ？`,hint:minus?`${t}こから ${b}こを とってみよう。`:`${a}こに ${b}こを たしてみよう。`,eq:minus?`${t} − ${b} ＝ ${a}`:`${a} ＋ ${b} ＝ ${t}`,say:`こたえは ${ans}だね。`,extra:{dots:minus?t:null}},ans);}
   if(v==='blank'){const t=total(),a=int(1,t-1),b=t-a,form=int(0,3);
@@ -220,16 +258,28 @@ function mathMaker(kind,r,settings){
    return num({kind:'calc',variant:v,tag:'かずの ならび',text:`□に はいる かずは？\n${seq.map((x,i)=>i===hole?'□':x).join('　→　')}`,hint:`となりの かずを くらべよう。${k}ずつ ${up?'ふえて':'へって'} いるよ。`,eq:`${seq[hole-1]} ${up?'＋':'−'} ${k} ＝ ${ans}`,say:`□は ${ans}だね。`},ans);}
   if(v==='bigger'){const big=r()<.5,set=new Set();while(set.size<4)set.add(int(0,limit));const nums=[...set],ans=big?Math.max(...nums):Math.min(...nums);
    return{kind:'calc',variant:v,tag:'かずの くらべっこ',text:`いちばん ${big?'おおきい':'ちいさい'} かずは どれ？`,answer:String(ans),options:shuffle(nums,r).map(String),hint:'かずを ひとつずつ くらべよう。0に ちかいほど ちいさいよ。',explain:`${nums.sort((x,y)=>x-y).join(' ＜ ')}。いちばん ${big?'おおきい':'ちいさい'}のは ${ans}だね。`,value:ans};}
+  if(v==='count'){const[name,e]=pick(SHAPE_SETS),other=pick(SHAPE_SETS.filter(x=>x[1]!==e))[1],n=int(2,Math.min(limit,12)),row=shuffle([...Array(n).fill(e),...Array(int(0,4)).fill(other)],r),lines=[];for(let i=0;i<row.length;i+=10)lines.push(row.slice(i,i+10).join(''));
+   return{kind:'calc',variant:v,tag:'かぞえよう',text:`${lines.join('\n')}\n「${name}」は いくつ？`,answer:`${n}こ`,options:numberOptions(n,r,unit('こ')),hint:'ひとつずつ ゆびで さして かぞえよう。',explain:`${name}は ${n}こ あるよ。`,value:n,target:e};}
+  if(v==='nth'){const row=shuffle(ROW_EMOJI,r).slice(0,5),n=int(1,5),back=r()<.4,ans=row[back?5-n:n-1],way=back?'うしろ':'まえ';
+   return{kind:'calc',variant:v,tag:'なんばんめ',text:`${row.join(' ')}\n${way}から ${n}ばんめは どれ？`,answer:ans,options:opts(ans,row,r),hint:`${way}から ひとつずつ ゆびで かぞえよう。`,explain:`${way}から ${n}ばんめは ${ans}だね。`,row};}
+  if(v==='decomp'){const a=int(3,limit),b=int(1,a-1);return num({kind:'calc',variant:v,tag:'わけっこ',text:`${a}は ${b}と いくつ？`,hint:`${a}から ${b}を とると いくつ かな？`,eq:`${b} ＋ ${a-b} ＝ ${a}`,say:`${b}と ${a-b}で ${a}だね。`},a-b);}
+  if(v==='neighbor'){const f=int(0,2),tag='となりの かず';
+   if(f===0){const a=int(0,limit-1);return num({kind:'calc',variant:v,tag,text:`${a}の つぎの かずは？`,hint:`${a}から ひとつ すすむと…`,eq:`${a} ＋ 1 ＝ ${a+1}`,say:`${a}の つぎは ${a+1}だね。`},a+1);}
+   if(f===1){const a=int(1,limit);return num({kind:'calc',variant:v,tag,text:`${a}の まえの かずは？`,hint:`${a}から ひとつ もどると…`,eq:`${a} − 1 ＝ ${a-1}`,say:`${a}の まえは ${a-1}だね。`},a-1);}
+   const a=int(0,limit-2);return num({kind:'calc',variant:v,tag,text:`${a} ＜ □ ＜ ${a+2}\n□に はいる かずは？`,hint:`${a}と ${a+2}の あいだの かずを さがそう。`,eq:`${a} ＋ 1 ＝ ${a+1}`,say:`□は ${a+1}だね。`},a+1);}
+  if(v==='tens'){const y=int(1,9);return num({kind:'calc',variant:v,tag:'10と いくつ',text:`10が 1こと 1が ${y}こで いくつ？`,hint:'10の かたまりと ばらを あわせよう。',eq:`10 ＋ ${y} ＝ ${10+y}`,say:`10と ${y}で ${10+y}だね。`},10+y);}
   const a=int(1,9);return num({kind:'calc',variant:'ten',tag:'あわせて 10',text:`${a} と いくつで 10に なる？`,hint:`${a}から 10まで、ゆびで かぞえてみよう。`,eq:`${a} ＋ ${10-a} ＝ 10`,say:`${a}と ${10-a}で 10だね。`},10-a);};
  const multiply=()=>{
-  const v=pick(['plain','plain','story','story','blank']),a=int(1,3),b=int(1,9),p=a*b;
+  const v=pick(['plain','plain','story','story','blank','which']),a=int(1,3),b=int(1,9),p=a*b;
   const hint=`${a}こずつが ${b}くみだよ。\n${Array.from({length:b},()=>a).join(' ＋ ')} を たしてみよう。`,eq=`${a} × ${b} ＝ ${p}`,extra={a,b};
   if(v==='story'){const[item,u]=pick(THINGS),box=pick(CONTAINERS);
    return num({kind:'multiply',variant:v,tag:`かけざん・${a}の だん`,text:`${box}が ${b}つ あります。\nどの ${box}にも ${item}が ${a}${u}ずつ はいっています。\nぜんぶで いくつ？`,hint,eq,say:`ぜんぶで ${p}${u}だね。`,extra},p,unit(u));}
   if(v==='blank'){const left=r()<.5;return num({kind:'multiply',variant:v,tag:`かけざん・${a}の だん`,text:left?`${a} × □ ＝ ${p}\n□に はいる かずは？`:`□ × ${b} ＝ ${p}\n□に はいる かずは？`,hint:left?`${a}を なんかい たすと ${p}に なるかな？`:`${b}かい たして ${p}に なる かずを さがそう。`,eq,say:`□は ${left?b:a}だね。`,extra:{...extra,hidePicture:true}},left?b:a);}
+  if(v==='which'){const all=[];for(let x=1;x<=3;x++)for(let y=1;y<=9;y++)if(x*y!==p)all.push(`${x} × ${y}`);const ans=`${a} × ${b}`;
+   return{kind:'multiply',variant:v,tag:`かけざん・${a}の だん`,text:`こたえが ${p}に なる しきは どれ？`,answer:ans,options:opts(ans,all,r),hint:'しきを ひとつずつ けいさんして みよう。',explain:`${eq}。${ans}の こたえが ${p}だね。`,eq,value:p,variant:v,a,b,hidePicture:true};}
   return num({kind:'multiply',variant:v,tag:`かけざん・${a}の だん`,text:`${a} × ${b} ＝ ？`,hint,eq,say:`${a}こずつ ${b}くみで ${p}こ。`,extra},p);};
  const word=()=>{
-  const c=pick(NAMES),c2=pick(NAMES.filter(x=>x!==c)),[it,u]=pick(THINGS),[food,fu]=pick(FOODS),v=int(0,9),fmt=unit(u),t=total(),a=int(1,t-1),b=t-a;
+  const c=pick(NAMES),c2=pick(NAMES.filter(x=>x!==c)),[it,u]=pick(THINGS),[food,fu]=pick(FOODS),v=int(0,13),fmt=unit(u),t=total(),a=int(1,t-1),b=t-a;
   const add=(text,hint,say,f=fmt,x=a,y=b,s=t)=>num({kind:'word',variant:`add${v}`,tag:'ぶんしょうだい',text,hint:hint||`${x}と ${y}を たすよ。\n${x} ＋ ${y} ＝ ？`,eq:`${x} ＋ ${y} ＝ ${s}`,say},s,f);
   const sub=(text,hint,say,f,tot,take,left)=>num({kind:'word',variant:`sub${v}`,tag:'ぶんしょうだい',text,hint:hint||`${tot}から ${take}を ひくよ。\n${tot} − ${take} ＝ ？`,eq:`${tot} − ${take} ＝ ${left}`,say},left,f);
   if(v===0)return add(`${c}は ${it}を ${a}${u} もっています。\n${c2}から ${b}${u} もらいました。\nぜんぶで いくつ？`,0,`ぜんぶで ${fmt(t)}だね。`);
@@ -241,14 +291,21 @@ function mathMaker(kind,r,settings){
   if(v===6)return sub(`${it}が ${t}${u} あります。\nそのうち ${b}${u}は あかです。\nあか いがいは いくつ？`,0,`あか いがいは ${fmt(a)}だね。`,fmt,t,b,a);
   if(v===7){const big=int(2,limit),small=int(1,big-1);return sub(`${c}は ${it}を ${big}${u}、${c2}は ${small}${u} もっています。\n${c}は ${c2}より いくつ おおい？`,`おおきい ほうから ちいさい ほうを ひくよ。\n${big} − ${small} ＝ ？`,`${c}が ${fmt(big-small)} おおいね。`,fmt,big,small,big-small);}
   if(v===8){const goal=int(4,limit),have=int(1,goal-1);return sub(`${c}は ${it}を ${have}${u} もっています。\n${goal}${u} あつめたいです。\nあと いくつ ひつようですか？`,`${goal}に なるまで あと いくつ？\n${goal} − ${have} ＝ ？`,`あと ${fmt(goal-have)} ひつようだね。`,fmt,goal,have,goal-have);}
+  if(v===9)return add(`${c}は ${it}を ${a}${u} もっています。\n${c2}は ${c}より ${b}${u} おおく もっています。\n${c2}は いくつ もっている？`,0,`${c2}は ${fmt(t)} もっているね。`);
+  if(v===10)return sub(`${c}は ${it}を ${t}${u} もっています。\n${c2}は ${c}より ${b}${u} すくなく もっています。\n${c2}は いくつ もっている？`,0,`${c2}は ${fmt(a)} もっているね。`,fmt,t,b,a);
+  if(v===11){const x=int(2,5),y=int(2,5),n=x+y-1;return num({kind:'word',variant:'queue',tag:'ぶんしょうだい',text:`${c}は まえから ${x}ばんめ、うしろから ${y}ばんめに ならんでいます。\nみんなで なんにん？`,hint:`${c}を 2かい かぞえて しまうよ。\n${x} ＋ ${y} から 1を ひこう。`,eq:`${x} ＋ ${y} ＝ ${x+y}、${x+y} − 1 ＝ ${n}`,say:`ぜんぶで ${n}にんだね。`},n,unit('にん'));}
+  if(v===12){const coins=limit===20?[10,5,1]:[5,1];let [p,q]=shuffle(coins,r),k1=int(1,3),k2=int(1,5);for(let i=0;i<60&&!(p*k1+q*k2>=3&&p*k1+q*k2<=limit);i++){[p,q]=shuffle(coins,r);k1=int(1,3);k2=int(1,5);}
+   if(!(p*k1+q*k2>=3&&p*k1+q*k2<=limit)){p=5;q=1;k1=1;k2=2;}const s1=p*k1,s2=q*k2,n=s1+s2;
+   return num({kind:'word',variant:'coins',tag:'ぶんしょうだい',text:`${p}えんだまが ${k1}こ、${q}えんだまが ${k2}こ あります。\nぜんぶで なんえん？`,hint:`${p}えんが ${k1}こで ${s1}えん。${q}えんが ${k2}こで ${s2}えん。\nそれを たしてみよう。`,eq:`${p} × ${k1} ＝ ${s1}、${q} × ${k2} ＝ ${s2}、${s1} ＋ ${s2} ＝ ${n}`,say:`ぜんぶで ${n}えんだね。`},n,unit('えん'));}
   const x=int(2,Math.max(2,limit-2)),y=int(1,Math.max(1,Math.min(limit-x,5))),z=int(1,x+y-1),s=x+y,ans=s-z;
   return num({kind:'word',variant:'mixed',tag:'ぶんしょうだい',text:`${c}は ${food}を ${x}${fu} もっていました。\n${y}${fu} もらって、${z}${fu} たべました。\nいま いくつ？`,hint:`まず ふえた ぶんを たして、つぎに たべた ぶんを ひくよ。\n${x} ＋ ${y} ＝ ${s}、${s} − ${z} ＝ ？`,eq:`${x} ＋ ${y} ＝ ${s}、${s} − ${z} ＝ ${ans}`,say:`いまは ${ans}${fu}だね。`},ans,unit(fu));};
  const clock=()=>{
   const five=settings.clock==='five',h=int(1,12),m=(five?[0,5,10,15,20,25,30,35,40,45,50,55]:[0,30])[int(0,five?11:1)],now=clockText(h,m),base={kind:'clock',tag:'とけい',h,m};
-  const v=pick(['read','read','read','after1','before1',...(m===0||m===30?['after30']:[])]);
+  const v=pick(['read','read','read','after','after','before','before',...(m===0||m===30?['after30','hand']:[])]);
   const mk=(variant,text,answer,wrongs,hint,explain)=>({...base,variant,text,answer,options:shuffle([answer,...wrongs],r),hint,explain});
-  if(v==='after1'){const h2=wrap12(h+1);return mk(v,'この とけいの 1じかんあとは なんじ？',clockText(h2,m),[clockText(wrap12(h-1),m),now,clockText(wrap12(h+2),m)],'みじかい はりが 1めもり すすむと 1じかんだよ。\nいまの じこくから かんがえよう。',`いまは ${now}。1じかん あとは ${clockText(h2,m)}だね。`);}
-  if(v==='before1'){const h2=wrap12(h-1);return mk(v,'この とけいの 1じかんまえは なんじ？',clockText(h2,m),[clockText(wrap12(h+1),m),now,clockText(wrap12(h-2),m)],'みじかい はりが 1めもり もどると 1じかんまえだよ。\nいまの じこくから かんがえよう。',`いまは ${now}。1じかん まえは ${clockText(h2,m)}だね。`);}
+  if(v==='after'||v==='before'){const k=int(1,3),fwd=v==='after',h2=wrap12(h+(fwd?k:-k)),wrongs=[...new Set([wrap12(h2+1),wrap12(h2-1),h,wrap12(h2+2),wrap12(h2-2)].filter(x=>x!==h2))].slice(0,3).map(x=>clockText(x,m));
+   return mk(`${v}${k}`,`この とけいの ${k}じかん${fwd?'あと':'まえ'}は なんじ？`,clockText(h2,m),wrongs,`みじかい はりが ${k}めもり ${fwd?'すすむ':'もどる'}と ${k}じかんだよ。\nいまの じこくから かんがえよう。`,`いまは ${now}。${k}じかん ${fwd?'あと':'まえ'}は ${clockText(h2,m)}だね。`);}
+  if(v==='hand')return mk(v,'この とけいの ながい はりは どこを さしている？',m===0?'12':'6',m===0?['3','6','9']:['12','3','9'],'ながい はりが 12の ときは ちょうど、6の ときは 30ぷんだよ。',`${now}の ときは、ながい はりは ${m===0?'12':'6'}を さすよ。`);
   if(v==='after30'){const ans=m===0?clockText(h,30):clockText(wrap12(h+1),0),wrongs=m===0?[clockText(h,0),clockText(wrap12(h+1),0),clockText(wrap12(h+1),30)]:[clockText(h,30),clockText(wrap12(h+1),30),clockText(wrap12(h+2),0)];return mk(v,'この とけいの 30ぷんあとは なんじ なんぷん？',ans,wrongs,'30ぷんは ながい はりが はんぶん まわる じかんだよ。\nながい はりが 6の ところだと 30ふん。',`いまは ${now}。30ぷん あとは ${ans}だね。`);}
   return mk('read','いま、なんじ なんぷん？',now,[clockText(wrap12(h+1),m),m===0?clockText(h,30):clockText(h,0),clockText(wrap12(h-1),m)],'みじかい はりが「じ」。ながい はりが「ふん」だよ。\nながい はりは、12が 0ふん、6が 30ふん。1めもりは 1ぷんだよ。',`みじかい はりは ${h}じ${m?'を すぎた ところ':''}。ながい はりは ${m}ふん。${now}だね。`);};
  return{calc,multiply,word,clock}[kind];
